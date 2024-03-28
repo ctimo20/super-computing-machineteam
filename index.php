@@ -8,6 +8,10 @@
 
 require_once 'phpqrcode/qrlib.php';
 
+if (!isset($_SESSION['admin_name'])) {
+    header('location:login_form.php');
+}
+
 // Path & Filename for saving QRCode
 $path = "images/";
 // If Folder not found
@@ -15,26 +19,26 @@ if (!is_dir($path)) {
     // Then MakeTheFolder
     mkdir($path);
 }
-$file = $path.uniqid().'.png';
+$file = $path . uniqid() . '.png';
 $text = "";
 // User inputs
 if (isset($_POST['submit'])) {
-    
+
     // If Name has been submitted
     if (isset($_POST['name'])) {
-        $text = "Name: ".$_POST['name']."\n";
+        $text = "Name: " . $_POST['name'] . "\n";
     }
     // If Email has been submitted
     if (isset($_POST['email'])) {
-        $text .= "Email: ".$_POST['email']."\n";
+        $text .= "Email: " . $_POST['email'] . "\n";
     }
     // If Facebook has been submitted
     if (isset($_POST['facebook'])) {
-        $text .= "Facebook: https://facebook.com/".$_POST['facebook']."\n";
+        $text .= "Facebook: https://facebook.com/" . $_POST['facebook'] . "\n";
     }
     // If Phone has been submitted
     if (isset($_POST['phone'])) {
-        $text .= "Phone: ".$_POST['phone']."\n";
+        $text .= "Phone: " . $_POST['phone'] . "\n";
     }
 
     // Create the QRCode
@@ -45,6 +49,7 @@ if (isset($_POST['submit'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -53,21 +58,21 @@ if (isset($_POST['submit'])) {
     <link rel="shortcut icon" href="qr-code.png" tfype="image/x-icon">
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <style>
         /* Remove the number input's arrow */
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
+            -webkit-appearance: none;
+            margin: 0;
         }
 
         input[type=number] {
-        -moz-appearance: textfield;
+            -moz-appearance: textfield;
         }
-
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -102,27 +107,25 @@ if (isset($_POST['submit'])) {
                 <div class="card-body">
                     <!-- Print the QRCode -->
                     <?php if (isset($_POST['submit'])) {
-                        echo '<img class="img-thumbnail border-success" src="'.$file.'" alt="">';
+                        echo '<img class="img-thumbnail border-success" src="' . $file . '" alt="">';
                     } else {
-                        $i=0;
+                        $i = 0;
                         if (count(glob("$path/*")) > 0) {
-                            if (is_dir($path)){
-                                if ($dh = opendir($path)){
-                                    while (($file = readdir($dh)) !== false){
+                            if (is_dir($path)) {
+                                if ($dh = opendir($path)) {
+                                    while (($file = readdir($dh)) !== false) {
                                         if ($file != "." && $file != ".." && $file != 'index.php') {
-                                            echo '<img class="img-thumbnail border-success mx-1" src="'.$path.$file.'" alt="">';
+                                            echo '<img class="img-thumbnail border-success mx-1" src="' . $path . $file . '" alt="">';
 
                                             // Limit = 6
-                                            if ($i>=5) break;
+                                            if ($i >= 5) break;
                                             $i++;
                                         }
-                                        
                                     }
                                     closedir($dh);
                                 }
                             }
                         }
-                        
                     } ?>
                 </div>
             </div>
@@ -134,4 +137,5 @@ if (isset($_POST['submit'])) {
     <!-- JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
